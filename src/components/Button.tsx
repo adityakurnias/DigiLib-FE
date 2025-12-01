@@ -18,7 +18,7 @@ const Button = ({
     const baseStyles = 'px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base';
 
     const variantStyles = {
-        primary: 'bg-emerald-600 hover:bg-emerald-700 text-white',
+        primary: 'bg-emerald-500/50 hover:bg-emerald-700 text-white',
         secondary: 'bg-white hover:bg-gray-50 text-emerald-600 border-2 border-emerald-600'
     };
 

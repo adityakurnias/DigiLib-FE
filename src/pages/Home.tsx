@@ -55,7 +55,7 @@ const Home = () => {
     return (
         <div className="min-h-screen bg-white pb-20">
             {/* Green Header Background */}
-            <div className="bg-emerald-600 rounded-b-[2.5rem] px-4 pt-6 pb-4 sm:px-6 md:px-8 relative z-0">
+            <div className="bg-emerald-600 rounded-b-2xl px-4 pt-6 pb-4 sm:px-6 md:px-8 relative z-0">
                 <div className="max-w-4xl mx-auto">
                     {/* Search Bar */}
                     <div className="mb-8">
@@ -67,7 +67,7 @@ const Home = () => {
 
                     {/* Hero Section (Featured Book) */}
                     {featuredBook ? (
-                        <div className="flex flex-col sm:flex-row gap-6 items-start mb-12">
+                        <div className="flex gap-6 items-start mb-4">
                             {/* Book Cover */}
                             <div className="w-32 sm:w-40 md:w-48 flex-shrink-0 rounded-lg overflow-hidden shadow-lg mx-auto sm:mx-0">
                                 <img
@@ -78,14 +78,14 @@ const Home = () => {
                             </div>
 
                             {/* Book Info */}
-                            <div className="flex-1 text-white text-center sm:text-left">
+                            <div className="flex-1 text-white text-left">
                                 <h1 className="text-2xl sm:text-3xl font-bold mb-3">{featuredBook.title}</h1>
                                 <p className="text-emerald-100 text-sm sm:text-base mb-4 line-clamp-3">
                                     {featuredBook.description}
                                 </p>
 
                                 {/* Tags/Category */}
-                                <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-6">
+                                <div className="flex flex-wrap gap-2 mb-6">
                                     <span className="bg-emerald-500/50 px-3 py-1 rounded-md text-xs font-medium">
                                         {featuredBook.categoryName}
                                     </span>
@@ -95,7 +95,7 @@ const Home = () => {
                                 </div>
 
                                 <Button
-                                    className="bg-emerald-500 hover:bg-emerald-400 text-white w-full sm:w-auto px-8"
+                                    className="hover:bg-emerald-400 text-white w-full sm:w-auto px-8"
                                     onClick={() => navigate(`/book/${featuredBook.id}`)}
                                 >
                                     Details
@@ -108,14 +108,6 @@ const Home = () => {
                             {loading ? 'Loading...' : 'Featured book not found'}
                         </div>
                     )}
-
-                    {/* Pagination Dots */}
-                    <div className="flex justify-center gap-2 mb-8">
-                        <div className="w-2.5 h-2.5 rounded-full bg-white/90"></div>
-                        <div className="w-2.5 h-2.5 rounded-full bg-white/40"></div>
-                        <div className="w-2.5 h-2.5 rounded-full bg-white/40"></div>
-                        <div className="w-2.5 h-2.5 rounded-full bg-white/40"></div>
-                    </div>
                 </div>
             </div>
 
@@ -165,7 +157,11 @@ const Home = () => {
                     <h2 className="text-xl font-bold text-gray-900 mb-4">Categories</h2>
                     <div className="flex overflow-x-auto gap-3 pb-2 scrollbar-hide">
                         {categories.map((category) => (
-                            <CategoryPill key={category.id} label={category.name} />
+                            <CategoryPill
+                                key={category.id}
+                                label={category.name}
+                                onClick={() => navigate(`/category/${category.id}`)}
+                            />
                         ))}
                     </div>
                 </div>

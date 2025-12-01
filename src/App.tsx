@@ -5,17 +5,23 @@ import Register from './pages/auth/register';
 import Dashboard from './pages/index';
 import Home from './pages/Home';
 import BookDetail from './pages/BookDetail';
+import CategoryBooks from './pages/CategoryBooks';
+import MainLayout from './components/MainLayout';
+
+import ProtectedRoute from './components/ProtectedRoute';
+import PublicRoute from './components/PublicRoute';
 
 function App() {
     return (
         <Router>
             <Routes>
                 <Route path="/" element={<Welcome />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/home" element={<Home />} />
-                <Route path="/book/:id" element={<BookDetail />} />
+                <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+                <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+                <Route path="/dashboard" element={<ProtectedRoute><MainLayout><Dashboard /></MainLayout></ProtectedRoute>} />
+                <Route path="/home" element={<ProtectedRoute><MainLayout><Home /></MainLayout></ProtectedRoute>} />
+                <Route path="/book/:id" element={<ProtectedRoute><MainLayout><BookDetail /></MainLayout></ProtectedRoute>} />
+                <Route path="/category/:id" element={<ProtectedRoute><MainLayout><CategoryBooks /></MainLayout></ProtectedRoute>} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>

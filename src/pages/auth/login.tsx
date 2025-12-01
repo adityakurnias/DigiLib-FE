@@ -21,8 +21,7 @@ const Login = () => {
     try {
       const response = await login({ email, password });
       if (response.success) {
-        // Navigate to dashboard or home page
-        navigate('/dashboard');
+        navigate('/home');
       }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');

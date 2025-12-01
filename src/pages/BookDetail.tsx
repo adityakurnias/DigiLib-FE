@@ -1,30 +1,40 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { getBookDetail, getImageUrl, type Book } from '../utils/api';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getBookDetail, getBooks, getImageUrl, type Book } from '../utils/api';
 import SearchBar from '../components/SearchBar';
 import Button from '../components/Button';
+import BookCard from '../components/BookCard';
 
 const BookDetail = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [book, setBook] = useState<Book | null>(null);
+    const [books, setBooks] = useState<Book[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchBook = async () => {
+        const fetchData = async () => {
             if (!id) return;
             try {
-                const response = await getBookDetail(Number(id));
-                if (response.success) {
-                    setBook(response.data);
+                const [bookRes, booksRes] = await Promise.all([
+                    getBookDetail(Number(id)),
+                    getBooks()
+                ]);
+
+                if (bookRes.success) {
+                    setBook(bookRes.data);
+                }
+                if (booksRes.success) {
+                    setBooks(booksRes.data);
                 }
             } catch (error) {
-                console.error('Failed to fetch book detail:', error);
+                console.error('Failed to fetch data:', error);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchBook();
+        fetchData();
     }, [id]);
 
     if (loading) {
@@ -37,8 +47,7 @@ const BookDetail = () => {
 
     return (
         <div className="min-h-screen bg-white">
-            {/* Green Header Background - Full height for this page style */}
-            <div className="bg-emerald-600 min-h-[60vh] rounded-b-[2.5rem] px-4 pt-6 pb-12 sm:px-6 md:px-8 relative">
+            <div className="bg-emerald-600 rounded-b-2xl px-4 pt-6 pb-12 sm:px-6 md:px-8 relative">
                 <div className="max-w-4xl mx-auto">
                     {/* Search Bar */}
                     <div className="mb-8">
@@ -102,6 +111,20 @@ const BookDetail = () => {
                             {book.description}
                         </p>
                     </div>
+                </div>
+            </div>
+
+            {/* Featured Section (All Books) */}
+            <div className="mb-8 mt-8 mx-auto max-w-4xl px-4">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Featured</h2>
+                <div className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide">
+                    {books.map((book) => (
+                        <BookCard
+                            key={book.id}
+                            book={book}
+                            onClick={() => navigate(`/book/${book.id}`)}
+                        />
+                    ))}
                 </div>
             </div>
         </div>

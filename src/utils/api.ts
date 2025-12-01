@@ -121,6 +121,23 @@ export const getCategories = async (): Promise<ApiResponse<Category[]>> => {
     return response.data;
 };
 
+export interface CategoryBooksResponse {
+    success: boolean;
+    category: Category;
+    data: Book[];
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+    };
+}
+
+export const getBooksByCategory = async (id: number): Promise<CategoryBooksResponse> => {
+    const response = await api.get<CategoryBooksResponse>(`/category/${id}/books`);
+    return response.data;
+};
+
 export const getImageUrl = (filename: string) => {
     if (!filename) return 'https://placehold.co/300x450?text=No+Cover';
     if (filename.startsWith('http')) return filename;
