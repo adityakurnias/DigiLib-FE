@@ -141,15 +141,32 @@ export const getBooksByCategory = async (id: number): Promise<CategoryBooksRespo
 export const getImageUrl = (filename: string) => {
     if (!filename) return 'https://placehold.co/300x450?text=No+Cover';
     if (filename.startsWith('http')) return filename;
-    return `${API_BASE_URL}/uploads/${filename}`; // Assuming images are served from /uploads, user didn't specify but this is common. Or maybe just base URL?
-    // User said coverImage: "1764082765303-sko5z8kzlv.png". I'll assume it needs a path.
-    // Let's try `${API_BASE_URL}/${filename}` first or ask. 
-    // Actually, usually it's static. I'll use a helper that can be easily changed.
-    // For now I will assume it is served from root or a specific static folder.
-    // Let's assume `${API_BASE_URL}/uploads/${filename}` is a safe bet for now or just `${API_BASE_URL}/${filename}`.
-    // Given the filename looks like an upload, I'll use `${API_BASE_URL}/uploads/${filename}`.
-    // Wait, I should probably check if the user specified the image path. They didn't.
-    // I'll use `${API_BASE_URL}/${filename}` for now as a fallback.
+    return `${API_BASE_URL}/uploads/${filename}`;
 };
+
+export interface BorrowItem {
+    id: number;
+    userId: number;
+    bookId: number;
+    borrowDate: string | null;
+    dueDate: string | null;
+    returnDate: string | null;
+    status: "pending" | "borrowed" | "rejected" | "returned";
+    approvedBy: number | null;
+    rejectedReason: string | null;
+    processedBy: number | null;
+    notes: string | null;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export const getSelfBorrowed = async (): Promise<ApiResponse<BorrowItem[]>> => {
+    const response = await api.get<ApiResponse<BorrowItem[]>>('/borrow/self');
+    return response.data;
+};
+
+export async function returnBorrow(id: number) {
+    return api.post(`/borrow/${id}/return`);
+}
 
 export default api;

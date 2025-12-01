@@ -13,6 +13,8 @@ const Home = () => {
     const [featuredBook, setFeaturedBook] = useState<Book | null>(null);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
+    const [showResults, setShowResults] = useState(false);
+    const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -50,6 +52,25 @@ const Home = () => {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        if (searchQuery.trim() === "") {
+            setFilteredBooks([]);
+            setShowResults(false);
+            return;
+        }
+
+        const q = searchQuery.toLowerCase();
+        const results = books.filter(
+            (b) =>
+                b.title.toLowerCase().includes(q) ||
+                b.author.toLowerCase().includes(q)
+        );
+
+        setFilteredBooks(results);
+        setShowResults(true);
+    }, [searchQuery, books]);
+
+
     const newestBooks = books.slice(0, 3); // Assuming API returns newest first or we just take first 3
 
     return (
@@ -58,12 +79,50 @@ const Home = () => {
             <div className="bg-emerald-600 rounded-b-2xl px-4 pt-6 pb-4 sm:px-6 md:px-8 relative z-0">
                 <div className="max-w-4xl mx-auto">
                     {/* Search Bar */}
-                    <div className="mb-8">
+                    <div className="mb-8 relative">
                         <SearchBar
                             value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onChange={(e) => {
+                                setSearchQuery(e.target.value);
+                                setShowResults(true);
+                            }}
                         />
+
+                        {/* 🔍 Popup Search Results */}
+                        {showResults && searchQuery.trim() !== '' && (
+                            <div className="absolute left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-200 max-h-64 overflow-y-auto z-50">
+                                {filteredBooks.length === 0 ? (
+                                    <div className="p-4 text-gray-500 text-center text-sm">
+                                        No results found
+                                    </div>
+                                ) : (
+                                    filteredBooks.map((book) => (
+                                        <div
+                                            key={book.id}
+                                            className="flex items-center gap-3 p-3 hover:bg-gray-100 cursor-pointer"
+                                            onClick={() => {
+                                                setShowResults(false);
+                                                navigate(`/book/${book.id}`);
+                                            }}
+                                        >
+                                            <img
+                                                src={getImageUrl(book.coverImage)}
+                                                className="w-10 h-14 object-cover rounded"
+                                                alt={book.title}
+                                            />
+                                            <div className="flex-1">
+                                                <p className="font-medium text-gray-900 text-sm">
+                                                    {book.title}
+                                                </p>
+                                                <p className="text-gray-500 text-xs">{book.author}</p>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        )}
                     </div>
+
 
                     {/* Hero Section (Featured Book) */}
                     {featuredBook ? (

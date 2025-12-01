@@ -4,6 +4,7 @@ import { getBookDetail, getBooks, getImageUrl, type Book } from '../utils/api';
 import SearchBar from '../components/SearchBar';
 import Button from '../components/Button';
 import BookCard from '../components/BookCard';
+import { getToken } from '../utils/api';
 
 const BookDetail = () => {
     const { id } = useParams();
@@ -37,6 +38,29 @@ const BookDetail = () => {
         fetchData();
     }, [id]);
 
+    const borrowBook = async () => {
+        try {
+            const res = await fetch(`http://localhost:3000/borrow/${id}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${getToken()}`
+                }
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                alert("Success borrow book!");
+            } else {
+                alert("Failed: " + data.message);
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Error borrowing book");
+        }
+    };
+
     if (loading) {
         return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
     }
@@ -49,10 +73,6 @@ const BookDetail = () => {
         <div className="min-h-screen bg-white">
             <div className="bg-emerald-600 rounded-b-2xl px-4 pt-6 pb-12 sm:px-6 md:px-8 relative">
                 <div className="max-w-4xl mx-auto">
-                    {/* Search Bar */}
-                    <div className="mb-8">
-                        <SearchBar />
-                    </div>
 
                     {/* Hero Section */}
                     <div className="flex flex-col sm:flex-row gap-8 items-start mb-8">
@@ -84,11 +104,11 @@ const BookDetail = () => {
 
                             {/* Action Buttons */}
                             <div className="space-y-3">
-                                <Button
+                                {/* <Button
                                     className="bg-emerald-500 hover:bg-emerald-400 text-white w-full"
                                 >
                                     Read
-                                </Button>
+                                </Button> */}
                                 <div className="flex gap-3">
                                     <Button
                                         className="bg-emerald-500 hover:bg-emerald-400 text-white flex-1"
@@ -96,7 +116,8 @@ const BookDetail = () => {
                                         Add to List
                                     </Button>
                                     <Button
-                                        className="bg-emerald-800/50 hover:bg-emerald-800/70 text-white flex-1"
+                                        className="bg-emerald-500 hover:bg-emerald-400 text-white flex-1"
+                                        onClick={borrowBook}
                                     >
                                         Borrow
                                     </Button>

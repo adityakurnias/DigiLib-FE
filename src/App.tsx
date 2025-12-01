@@ -6,6 +6,7 @@ import Dashboard from './pages/index';
 import Home from './pages/Home';
 import BookDetail from './pages/BookDetail';
 import CategoryBooks from './pages/CategoryBooks';
+import BorrowedBooks from './pages/BorrowedBooks';
 import MainLayout from './components/MainLayout';
 
 import ProtectedRoute from './components/ProtectedRoute';
@@ -20,6 +21,7 @@ function App() {
                 <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
                 <Route path="/dashboard" element={<ProtectedRoute><MainLayout><Dashboard /></MainLayout></ProtectedRoute>} />
                 <Route path="/home" element={<ProtectedRoute><MainLayout><Home /></MainLayout></ProtectedRoute>} />
+                <Route path="/borrowed" element={<ProtectedRoute><MainLayout><BorrowedBooks /></MainLayout></ProtectedRoute>} />
                 <Route path="/book/:id" element={<ProtectedRoute><MainLayout><BookDetail /></MainLayout></ProtectedRoute>} />
                 <Route path="/category/:id" element={<ProtectedRoute><MainLayout><CategoryBooks /></MainLayout></ProtectedRoute>} />
                 <Route path="*" element={<Navigate to="/" replace />} />

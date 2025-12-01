@@ -51,7 +51,6 @@ const Welcome = () => {
                     <div className="w-full space-y-3">
                         {isAuthenticated ? (
                             <Button
-                                variant="primary"
                                 fullWidth
                                 onClick={() => navigate('/home')}
                                 icon={
@@ -75,7 +74,6 @@ const Welcome = () => {
                         ) : (
                             <>
                                 <Button
-                                    variant="primary"
                                     fullWidth
                                     onClick={() => navigate('/login')}
                                     icon={
@@ -97,7 +95,6 @@ const Welcome = () => {
                                     Sign In
                                 </Button>
                                 <Button
-                                    variant="secondary"
                                     fullWidth
                                     onClick={() => navigate('/register')}
                                 >
