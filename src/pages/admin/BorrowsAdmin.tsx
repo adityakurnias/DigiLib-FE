@@ -27,7 +27,6 @@ const BorrowsAdmin = () => {
         <CrudPage<BorrowItem>
             title="Manage Borrows"
             fetchData={getBorrows}
-            // No create/update/delete for borrows in this simple admin, only status changes
             columns={[
                 { key: 'id', label: 'ID' },
                 { key: 'userId', label: 'User ID' },

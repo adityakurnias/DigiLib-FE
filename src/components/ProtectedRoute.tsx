@@ -1,21 +1,16 @@
-import { Navigate, useLocation } from 'react-router-dom';
-import { getToken } from '../utils/api';
-import type { ReactNode } from 'react';
+import { Navigate } from "react-router-dom";
 
-interface ProtectedRouteProps {
-    children: ReactNode;
-}
+const ProtectedRoute = ({ children, adminOnly = false }: { children: React.ReactNode; adminOnly?: boolean }) => {
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user") || "null");
 
-const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-    const token = getToken();
-    const location = useLocation();
+    if (!token) return <Navigate to="/login" replace />;
 
-    if (!token) {
-        // Redirect to login page with the return url
-        return <Navigate to="/login" state={{ from: location }} replace />;
+    if (adminOnly && user?.role !== "admin") {
+        return <Navigate to="/home" replace />;
     }
 
-    return <>{children}</>;
+    return children;
 };
 
 export default ProtectedRoute;

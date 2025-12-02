@@ -13,7 +13,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
 
     const menuItems = [
         {
-            name: 'Dashboard', path: '/home', icon: (
+            name: 'Home', path: '/home', icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                 </svg>
@@ -27,6 +27,18 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             )
         },
     ];
+
+    if (user?.role === "admin" || user?.role === "librarian") {
+    menuItems.push({
+        name: 'Admin Dashboard',
+        path: '/dashboard',
+        icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h18v4H3V3zm0 6h18v12H3V9zm5 3v6m4-6v6m4-6v6" />
+            </svg>
+        )
+    });
+}
 
     return (
         <>

@@ -9,7 +9,7 @@ interface Column<T> {
 interface FormField {
     name: string;
     label: string;
-    type: 'text' | 'number' | 'email' | 'password' | 'select' | 'textarea' | 'date';
+    type: 'text' | 'number' | 'email' | 'password' | 'select' | 'textarea' | 'date' | 'file';
     options?: { label: string; value: any }[]; // For select
     required?: boolean;
 }
@@ -66,7 +66,18 @@ const CrudPage = <T extends { id: number }>({
     const handleOpenModal = (item?: T) => {
         if (item) {
             setEditingItem(item);
-            setFormData(item);
+
+            const allowed: any = {};
+            formFields?.forEach(f => {
+                if (f.type === 'file') {
+                    // file input must not have a preset value
+                    allowed[f.name] = null;
+                } else {
+                    allowed[f.name] = (item as any)[f.name];
+                }
+            });
+            setFormData(allowed);
+
         } else {
             setEditingItem(null);
             setFormData({});
@@ -86,7 +97,16 @@ const CrudPage = <T extends { id: number }>({
         e.preventDefault();
         setError(null);
         try {
-            const submitData = transformDataBeforeSubmit ? transformDataBeforeSubmit(formData) : formData;
+            let submitData: any;
+
+            if (Object.values(formData).some(v => v instanceof File)) {
+                submitData = new FormData();
+                Object.entries(formData).forEach(([k, v]) => {
+                    submitData.append(k, v as any);
+                });
+            } else {
+                submitData = transformDataBeforeSubmit ? transformDataBeforeSubmit(formData) : formData;
+            }
 
             if (editingItem && editingItem.id) {
                 if (updateItem) {
@@ -119,7 +139,13 @@ const CrudPage = <T extends { id: number }>({
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
+        const { name, value, files, type } = e.target as HTMLInputElement;
+
+        if (type === 'file') {
+            setFormData((prev: any) => ({ ...prev, [name]: files ? files[0] : null }));
+            return;
+        }
+
         setFormData((prev: any) => ({ ...prev, [name]: value }));
     };
 
@@ -206,8 +232,8 @@ const CrudPage = <T extends { id: number }>({
             {/* Modal */}
             {isModalOpen && formFields && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                    <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
-                        <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                    <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+                        <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 sticky top-0 z-10">
                             <h3 className="text-lg font-semibold text-gray-800">
                                 {editingItem ? 'Edit Item' : 'Create New Item'}
                             </h3>
@@ -230,8 +256,18 @@ const CrudPage = <T extends { id: number }>({
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         {field.label} {field.required && <span className="text-red-500">*</span>}
                                     </label>
+                                    {field.type === 'file' ? (
+<input
+    type="file"
+    name={field.name}
+    onChange={handleInputChange}
+    required={editingItem ? false : field.required} 
+    defaultValue={undefined}
+    className="..."
+/>
 
-                                    {field.type === 'select' ? (
+                                    ) : field.type === 'select' ? (
+
                                         <div className="relative">
                                             <select
                                                 name={field.name}

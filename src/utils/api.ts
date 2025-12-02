@@ -181,12 +181,18 @@ export interface User {
 }
 
 // Books CRUD
-export const createBook = async (data: Partial<Book>) => {
-    return api.post<Book>('/book', data);
+export const createBook = async (data: FormData | any) => {
+    return api.post('/book', data, {
+        headers: data instanceof FormData ? { 'Content-Type': 'multipart/form-data' } : {}
+    });
 };
-export const updateBook = async (id: number, data: Partial<Book>) => {
-    return api.put<Book>(`/book/${id}`, data);
+
+export const updateBook = async (id: number, data: FormData) => {
+    return api.post(`/book/${id}`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
 };
+
 export const deleteBook = async (id: number) => {
     return api.delete(`/book/${id}`);
 };
@@ -220,8 +226,10 @@ export const changePassword = async (id: number, password: string) => {
 };
 
 export const getBorrows = async () => {
-    return api.get<ApiResponse<BorrowItem[]>>('/borrow');
+    const response = await api.get<ApiResponse<BorrowItem[]>>('/borrow');
+    return response.data.data; 
 };
+
 
 // Borrow admin actions
 export const approveBorrow = async (id: number) => {

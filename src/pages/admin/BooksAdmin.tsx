@@ -46,7 +46,8 @@ const BooksAdmin = () => {
                 { name: 'categoryId', label: 'Category', type: 'select', options: categories, required: true },
                 { name: 'description', label: 'Description', type: 'textarea', required: true },
                 // Note: File upload for coverImage is not yet implemented in generic form, using text URL for now or need extension
-                { name: 'coverImage', label: 'Cover Image URL', type: 'text', required: false },
+                { name: 'coverImage', label: 'Cover Image', type: 'file', required: false },
+
             ]}
             transformDataBeforeSubmit={(data) => ({
                 ...data,
